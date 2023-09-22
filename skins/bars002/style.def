@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Gallery SVN ID:
+ * $Id: style.def 17208 2007-11-26 01:19:35Z JensT $
+*/
+
+$name = _("bars0002");
+$description = _("Grey background, Grey metal bars, black &amp; red text colors");
+$version = '1.0.7';
+$last_update = '2005-12-14';
+?>
