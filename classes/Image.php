@@ -34,7 +34,7 @@ class Image {
 	var $raw_height;
 	var $version;
 
-	function Image() {
+	function __construct() {
 		global $gallery;
 
 		// Seed new images with the appropriate version.
@@ -190,8 +190,12 @@ class Image {
 			$attrs['height']	= $this->height;
 		}
 
-		$fullImage	= urlencode($this->name) .".$this->type";
-		$resizedImage	= urlencode($this->resizedName) .".$this->type";
+		if (!is_null($this->name)) {
+			$fullImage	= urlencode($this->name) .".$this->type";
+		}
+		if (!is_null($this->resizedName)) {
+			$resizedImage	= urlencode($this->resizedName) .".$this->type";
+		}
 
 		if ($this->resizedName && $size == 0) {
 			if ($full) {

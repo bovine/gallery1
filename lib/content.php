@@ -474,7 +474,7 @@ function displayPhotoFields($index, $extra_fields, $withExtraFields = true, $wit
 	}
 
 	if ($withExif && (isset($gallery->app->use_exif) || isset($gallery->app->exiftags)) &&
-	   (eregi("jpe?g\$", $photo->image->type))) {
+	   (preg_match("/jpe?g\$/i", $photo->image->type))) {
 		$myExif = $gallery->album->getExif($index, $forceRefresh);
 
 		 if (!empty($myExif) && !isset($myExif['Error'])) {
@@ -1326,7 +1326,7 @@ function gallery_validation_link($file, $valid=true, $args = array()) {
 	$url = makeGalleryURL($file, $args);
 
 	if (!empty($file) && isset($gallery->app->photoAlbumURL)) {
-		$uri = urlencode(eregi_replace("&amp;", "&", $url));
+		$uri = urlencode(preg_replace("/&amp;/i", "&", $url));
 	}
 	else {
 		$uri = 'referer&amp;PHPSESSID='. $args['PHPSESSID'];
@@ -1354,7 +1354,7 @@ function album_validation_link($album, $photo='', $valid=true) {
 	$args['PHPSESSID'] = session_id();
 
 	$link='<a href="http://validator.w3.org/check?uri='.
-		urlencode(eregi_replace("&amp;", "&",
+		urlencode(preg_replace("/&amp;/i", "&",
 			makeAlbumURL($album, $photo, $args))).
 		'"> <img border="0" src="http://www.w3.org/Icons/valid-html401" alt="Valid HTML 4.01!" height="31" width="88"></a>';
 
@@ -1595,7 +1595,7 @@ function sanitizeInput($value) {
 	static $safehtml;
 
 	if (empty($safehtml)) {
-		$safehtml =& new HTML_Safe();
+		$safehtml = new HTML_Safe();
 	}
 
 	if(is_array($value)) {
@@ -1610,7 +1610,6 @@ function sanitizeInput($value) {
 	else {
 		//$sanitized = gHtmlSafe($safehtml->parse($value));
 		$sanitized = unhtmlentities($safehtml->parse($value));
-
 		if($sanitized != $value) {
 			//echo "--->". $sanitized;
 		}

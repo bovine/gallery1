@@ -57,8 +57,8 @@ else {
 if ($zikula ||
     $postnuke ||
     $phpnuke ||
-    !strcmp($op, "modload") ||
-    !strcmp($mop, "modload") ||
+    (isset($op) && !strcmp($op, "modload")) ||
+    (isset($mop) && !strcmp($mop, "modload")) ||
     isset($option))
 {
 	/*

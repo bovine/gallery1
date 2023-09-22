@@ -36,7 +36,7 @@ class Album {
 	*/
 	var $transient;
 
-	function Album() {
+	function __construct() {
 		global $gallery;
 
 		$this->fields["title"] = gTranslate('core', "Untitled");
@@ -92,7 +92,7 @@ class Album {
 		$this->fields["clicks_date"] = time();
 		$this->fields["display_clicks"] = $gallery->app->default["display_clicks"];
 		$this->fields["serial_number"] = 0;
-		$this->fields["extra_fields"] = split(",", trim($gallery->app->default["extra_fields"]));
+		$this->fields["extra_fields"] = explode(",", trim($gallery->app->default["extra_fields"]));
 		foreach ($this->fields["extra_fields"] as $key => $value) {
 			$value = trim($value);
 			if (empty($value)) {
@@ -104,6 +104,7 @@ class Album {
 
 		$this->fields["cached_photo_count"] = 0;
 		$this->fields["photos_separate"] = FALSE;
+		if (!isset($this->transient)) { $this->transient = new stdClass; }
 		$this->transient->photosloaded = TRUE;
 
 		$this->fields["item_owner_display"] = $gallery->app->default["item_owner_display"];
@@ -917,6 +918,7 @@ class Album {
 
 		global $gallery;
 
+		if (!isset($this->transient)) { $this->transient = new stdClass; }
 		$this->transient->photosloaded = FALSE;
 		$dir = $gallery->app->albumDir . "/$name";
 
@@ -949,6 +951,7 @@ class Album {
 			}
 		}
 		else {
+			if (!isset($this->transient)) { $this->transient = new stdClass; }
 			$this->transient->photosloaded = TRUE;
 		}
 
@@ -967,6 +970,7 @@ class Album {
 			return 0;
 		}
 
+		if (!isset($this->transient)) { $this->transient = new stdClass; }
 		$this->transient->photosloaded = TRUE;
 
 		return true;
@@ -1320,7 +1324,7 @@ class Album {
 				    ((isMovie($tag) || $tag=="jpg") && file_exists("$dir/$name.thumb.jpg")))
 				{
 					// append a 3 digit number to the end of the filename if it exists already
-					if (!ereg("_[[:digit:]]{3}$", $name)) {
+					if (!preg_match("_[[:digit:]]{3}$", $name)) {
 						$name = $name . "_001";
 					}
 
@@ -1853,7 +1857,7 @@ class Album {
 		    isset($gallery->app->mirrorSites) &&
 		    strcmp($type, "highlight"))
 		{
-			foreach(split("[[:space:]]+", $gallery->app->mirrorSites) as $base_url) {
+			foreach(preg_split("/[[:space:]]+/", $gallery->app->mirrorSites) as $base_url) {
 				$base_url .= $albumPath;
 				$serial = $base_url . "/serial.{$this->fields['serial_number']}.dat";
 
@@ -3370,9 +3374,9 @@ class Album {
 
 	function getIndexByVotingId($vote_id) {
 		global $gallery;
-		if (ereg("^item\.(.*)$", $vote_id, $matches)) {
+		if (preg_match("^item\.(.*)$", $vote_id, $matches)) {
 			$index = $this->getPhotoIndex($matches[1]);
-		} else if (ereg("^album\.(.*)$", $vote_id, $matches)) {
+		} else if (preg_match("^album\.(.*)$", $vote_id, $matches)) {
 			$index = $this->getAlbumIndex($matches[1]);
 			if ($index > 0) {
 				$myAlbum = new Album();

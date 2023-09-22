@@ -235,7 +235,7 @@ if (empty($action)) {
 		</tr>
 <?php
 		foreach ($results['file_missing'] as $fileName) {
-			$contents = split('/', $fileName);
+			$contents = explode('/', $fileName);
 			$contents[1] = substr($contents[1], 0, strrpos($contents[1], '.'));
 			echo "\t<tr>";
 			echo "\n\t<td><a href='" . makeAlbumUrl($contents[0], $contents[1]) . "'>" . $fileName . "</a></td>";

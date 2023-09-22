@@ -75,7 +75,7 @@ else {
 </tr>
 <tr>
 	<td>
-		<table class="inner" width="100%">	
+		<table class="inner" width="100%">
 		<tr>
 			<td class="desc"><?php echo gTranslate('config', "Let us see if we can figure out what operating system you are using.") ?></td>
 		</tr>
@@ -281,7 +281,7 @@ function checkNetpbm($cmd) {
 					$linecount++;
 					$buf = fgets($fd, 4096);
 					if ($linecount == 1) {
-			    			if (eregi("using lib(pbm|Netpbm) from Netpbm version: Netpbm (.*)[\n\r]$",  $buf, $regs)) {
+						if (preg_match("/using lib(pbm|Netpbm) from Netpbm version: Netpbm (.*)[\n\r]$/i",  $buf, $regs)) {
 							$version = $regs[1];
 						} else {
 							$result['error'] = $buf;

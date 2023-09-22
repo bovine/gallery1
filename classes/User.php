@@ -37,7 +37,7 @@ class Abstract_User {
 	var $uid;
 	var $canChangeOwnPw;
 
-	function Abstract_User() {
+	function __construct() {
 		$this->setIsAdmin(false);
 		$this->setCanCreateAlbums(false);
 		$this->uid = time() . "_" . mt_rand();

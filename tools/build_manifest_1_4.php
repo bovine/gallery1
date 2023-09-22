@@ -85,10 +85,10 @@ function getManifestFiles($folder) {
 
 	if (fs_file_exists($svnfile)) {
 		$data = fs_file_get_contents($svnfile);
-		$dataArray = $split = split(chr(12), $data);
+		$dataArray = $split = explode(chr(12), $data);
 
 		foreach($dataArray as $nr => $entry) {
-			$fileInfo = split("\n", $entry);
+			$fileInfo = explode("\n", $entry);
 
 			echo ".";
 			if(empty($fileInfo[1]) || empty($fileInfo[2])) {

@@ -245,7 +245,7 @@ function makeFormIntro($target, $attrList = array(), $urlargs = array()) {
 		$url = unhtmlentities($target);
 	}
 
-	$result = split("\?", $url);
+	$result = explode("?", $url);
 	$target = $result[0];
 	$tmp = (sizeof($result) > 1) ? $result[1] :'';
 
@@ -264,12 +264,12 @@ function makeFormIntro($target, $attrList = array(), $urlargs = array()) {
 
 	$form = "\n<form action=\"$target\"$attrs>\n";
 
-	$args = split("&", $tmp);
+	$args = explode("&", $tmp);
 	foreach ($args as $arg) {
 		if (strlen($arg) == 0) {
 			continue;
 		}
-		list($key, $val) = split("=", $arg);
+		list($key, $val) = explode("=", $arg);
 		if(in_array($key, $usedIDs)) {
 			$id = "${key}_${idCounter}";
 			$idCounter++;

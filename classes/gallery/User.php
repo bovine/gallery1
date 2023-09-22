@@ -34,7 +34,7 @@ class Gallery_User extends Abstract_User {
 	var $origEmail;
 	// the email from original account creation.  Just incase user goes feral
 
-	function Gallery_User() {
+	function __construct() {
 		Abstract_User::Abstract_User();
 		$this->setDefaultLanguage('');
 

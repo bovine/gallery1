@@ -34,7 +34,7 @@ class galleryTable {
 	var $columnCount;
 	var $elements;
 
-	function galleryTable() {
+	function __construct() {
 		$this->attrs = array();
 		$this->headers = array();
 		$this->headerClass = '';

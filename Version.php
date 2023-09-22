@@ -20,6 +20,7 @@
  * $Id: Version.php 18732 2008-11-17 23:12:00Z JensT $
  */
 
+$gallery = (object)[];
 $gallery->version = '1.5.10';
 $gallery->config_version = 97;
 $gallery->album_version = 38;

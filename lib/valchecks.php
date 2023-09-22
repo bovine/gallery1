@@ -368,10 +368,10 @@ function validAlbumName($name) {
 	$name = str_replace("'", "", $name);
 	$name = str_replace("`", "", $name);
 	$name = strtr($name, "%\\/*?\"<>|& .+#(){}~", "-------------------");
-	$name = ereg_replace("\-+", "-", $name);
-	$name = ereg_replace("\-+$", "", $name);
-	$name = ereg_replace("^\-", "", $name);
-	$name = ereg_replace("\-$", "", $name);
+	$name = preg_replace("/\-+/", "-", $name);
+	$name = preg_replace("/\-+$/", "", $name);
+	$name = preg_replace("/^\-/", "", $name);
+	$name = preg_replace("/\-$/", "", $name);
 
 	if ($name != $nameOrig) {
 		$ret = $name;
@@ -475,7 +475,7 @@ function cleanRepetition($partLen, $string) {
 		$repeated = true;
 
 		for ($j = 0; $j < $partLen && ($j + $i + $partLen) < strlen($string) ; $j++) {
-			$repeated = $repeated && ($string{($j + $i)} == $string{($j + $i + $partLen)});
+			$repeated = $repeated && ($string[($j + $i)] == $string[($j + $i + $partLen)]);
 		}
 
 		if ($j < $partLen) {
@@ -487,7 +487,7 @@ function cleanRepetition($partLen, $string) {
 			$repeated = false;
 		}
 		else {
-			$cleaned .= $string{$i};
+			$cleaned .= $string[$i];
 		}
 
 	}

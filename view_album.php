@@ -640,7 +640,7 @@ if ($numPhotos) {
 
 			/* Now do the caption row */
 			if ($gallery->album->isAlbum($i)) {
-				$myAlbum = new Album;
+				$myAlbum = new Album();
 				$myAlbum->load($gallery->album->getAlbumName($i));
 			}
 			else {

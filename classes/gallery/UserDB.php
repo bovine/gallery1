@@ -32,7 +32,7 @@ class Gallery_UserDB extends Abstract_UserDB {
 	var $version;
 	var $initialized;
 
-	function Gallery_UserDB() {
+	function __construct() {
 		global $gallery;
 
 		$this->initialized = false;

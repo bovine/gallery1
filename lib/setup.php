@@ -417,7 +417,7 @@ function check_exec() {
 
 	if (!empty($disabled)) {
 		foreach(explode(',', $disabled) as $disabled_func) {
-			if(eregi('^exec$', $disabled_func)) {
+			if(preg_match('/^exec$/i', $disabled_func)) {
 				$fail['fail-exec'] = true;
 			}
 		}
@@ -801,7 +801,7 @@ function check_gallery_version() {
 	$age = (time() - $gallery->last_change)/86400;
 
 	/* is this a beta or RC version? */
-	$beta = ereg('-(b|RC)[0-9]*$', $gallery->version);
+	$beta = preg_match('/-(b|RC)[0-9]*$/', $gallery->version);
 
 	$link = galleryLink($gallery->url, $gallery->url, array('target' => '_blank'));
 
@@ -945,12 +945,12 @@ function check_locale() {
 			$keylist = array_keys($nls['alias'],$locale);
 			$aliases = $keylist;
 			if (getOS() != OS_WINDOWS) {
-				$sub='^(' . implode('|', $keylist) . '|' . substr($locale,0,5) . ')';
+				$sub='/^(' . implode('|', $keylist) . '|' . substr($locale,0,5) . ')/';
 				foreach ($system_locales as $key => $value) {
-					if (ereg($sub, $value)) {
+					if (preg_match($sub, $value)) {
 						$aliases[] = $value;
 					}
-					elseif (ereg('^' . substr($locale,0,2),$value)) {
+					elseif (preg_match('/^' . substr($locale,0,2) . '/',$value)) {
 						$aliases[] = $value;
 					}
 				}
@@ -958,7 +958,7 @@ function check_locale() {
 		}
 		else {
 			foreach ($system_locales as $key => $value) {
-				if (ereg('^' . substr($locale,0,2), $value)) {
+				if (preg_match('/^' . substr($locale,0,2) . '/', $value)) {
 					$aliases[] = $value;
 				}
 			}
@@ -1253,7 +1253,7 @@ function check_poll_nv_pairs($var) {
 					$rownum-1);
 				break;
 			}
-			else if (!ereg("^[1-9][0-9]*$", $element["value"])) {
+			else if (!preg_match("/^[1-9][0-9]*$/", $element["value"])) {
 				$fail[] = sprintf(gTranslate('common', "In %s, for name %s (row %d) value %s should be a positive whole number"),
 					gTranslate('common', "Vote words and values"),
 					$element["name"],
@@ -1272,7 +1272,7 @@ function check_register_globals() {
 
 	$globals_enabled = ini_get('register_globals');
 
-	if (!empty($globals_enabled) && !eregi('no|off|false', $globals_enabled)) {
+	if (!empty($globals_enabled) && !preg_match('/no|off|false/i', $globals_enabled)) {
 		$fail['warn-register_globals'] = true;
 	}
 	else {
@@ -1483,7 +1483,7 @@ function verify_email($emailMaster) {
 		$success[] = gTranslate('common', "Valid admin email address given.");
 	}
 	else {
-		$adminEmail = ereg_replace('([[:space:]]+)', '', $gallery->session->configForm->adminEmail);
+		$adminEmail = preg_replace('/([[:space:]]+)/', '', $gallery->session->configForm->adminEmail);
 		$emails = array_filter1(explode(',', $gallery->session->configForm->adminEmail));
 		$size  = sizeof($emails);
 
@@ -2024,7 +2024,7 @@ function checkImageMagick($cmd) {
         if (getOS() == OS_WINDOWS) {
             $version = "<i>" . gTranslate('common', "can't detect version on Windows.") ."</i>";
         }
-        else if (eregi("version: (.*) http(.*)$", $results[0], $regs)) {
+        else if (preg_match("/version: (.*) http(.*)$/i", $results[0], $regs)) {
             $version = $regs[1];
         } else {
             $result['error'] = $results[0];

@@ -302,7 +302,7 @@ if ( (sizeof($albumDB->brokenAlbums) || sizeof($albumDB->outOfDateAlbums)) && $g
 	echo "\n</div></center>\n";
 }
 
-if (getRequestVar('gRedir') == 1 && ! $gallery->session->gRedirDone) {
+if (getRequestVar('gRedir') == 1 && (!isset($gallery->session->gRedirDone) || ! $gallery->session->gRedirDone)) {
     echo "\n<center><div style=\"width:60%; border-style:outset; border-width:5px; border-color:red; padding: 5px\">";
     echo "\n<p class=\"head\"><u>". gTranslate('core', "Attention!") ."</u></p>";
 
@@ -446,7 +446,7 @@ for ($i = $start; $i <= $end; $i++) {
 		}
 		echo '</a>';
 
-		if (ereg("album[[:digit:]]+$", $albumURL)) {
+		if (preg_match("album[[:digit:]]+$", $albumURL)) {
 			if (!$gallery->session->offline) {
 				echo '<br><span class="error">'.
 				gTranslate('core', "Hey!") .

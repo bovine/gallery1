@@ -87,7 +87,7 @@ set_time_limit($gallery->app->timeLimit);
 */
 if (empty($gallery->app->skipRegisterGlobals) || $gallery->app->skipRegisterGlobals != "yes") {
 	$register_globals = @ini_get('register_globals');
-	if (!empty($register_globals) && !eregi("no|off|false", $register_globals)) {
+	if (!empty($register_globals) && !preg_match("/no|off|false/i", $register_globals)) {
 		foreach (array_keys($_REQUEST) as $key) {
 			unset($$key);
 		}
@@ -145,36 +145,36 @@ else {
 if(isset($gallery->app)) {
 	if (isset($_SERVER["HTTPS"] ) && stristr($_SERVER["HTTPS"], "on")) {
 		$gallery->app->photoAlbumURL =
-			eregi_replace("^http:", "https:", $gallery->app->photoAlbumURL);
+			preg_replace("/^http:/i", "https:", $gallery->app->photoAlbumURL);
 		$gallery->app->albumDirURL =
-			eregi_replace("^http:", "https:", $gallery->app->albumDirURL);
+			preg_replace("/^http:/i", "https:", $gallery->app->albumDirURL);
 	}
 	else {
 		$gallery->app->photoAlbumURL =
-			eregi_replace("^https:", "http:", $gallery->app->photoAlbumURL);
+			preg_replace("/^https:/i", "http:", $gallery->app->photoAlbumURL);
 		$gallery->app->albumDirURL =
-			eregi_replace("^https:", "http:", $gallery->app->albumDirURL);
+			preg_replace("/^https:/i", "http:", $gallery->app->albumDirURL);
 	}
 
 	/*
 	 * We have a Coral (http://www.scs.cs.nyu.edu/coral/) request coming in, adjust outbound links
 	*/
 	if(isset($_SERVER['HTTP_USER_AGENT']) && strstr($_SERVER['HTTP_USER_AGENT'], 'CoralWebPrx')) {
-		if (ereg("^(http://[^:]+):(\d+)(.*)$", $gallery->app->photoAlbumURL)) {
+		if (preg_match("/^(http://[^:]+):(\d+)(.*)$/i", $gallery->app->photoAlbumURL)) {
 			$gallery->app->photoAlbumURL =
-				ereg_replace("^(http://[^:]+):(\d+)(.*)$", "\1.\2\3", $galllery->app->photoAlbumURL);
+				preg_replace("/^(http://[^:]+):(\d+)(.*)$/i", "\1.\2\3", $galllery->app->photoAlbumURL);
 		}
 
 		$gallery->app->photoAlbumURL =
-			ereg_replace("^(http://[^/]+)(.*)$", '\1.nyud.net:8090\2',$gallery->app->photoAlbumURL);
+			preg_replace("/^(http://[^/]+)(.*)$/i", '\1.nyud.net:8090\2',$gallery->app->photoAlbumURL);
 
-		if (ereg("^(http://[^:]+):(\d+)(.*)$", $gallery->app->albumDirURL)) {
+		if (preg_match("/^(http://[^:]+):(\d+)(.*)$/i", $gallery->app->albumDirURL)) {
 			$gallery->app->albumDirURL =
-				ereg_replace("^(http://[^:]+):(\d+)(.*)$", "\1.\2\3", $galllery->app->albumDirURL);
+				preg_replace("/^(http://[^:]+):(\d+)(.*)$/i", "\1.\2\3", $galllery->app->albumDirURL);
 		}
 
 		$gallery->app->albumDirURL =
-			ereg_replace("^(http://[^/]+)(.*)$", '\1.nyud.net:8090\2',$gallery->app->albumDirURL);
+			preg_replace("/^(http://[^/]+)(.*)$/i", '\1.nyud.net:8090\2',$gallery->app->albumDirURL);
 	}
 }
 
@@ -182,7 +182,7 @@ if(isset($gallery->app)) {
  * Turn off magic quotes runtime as they interfere with saving and
  * restoring data from our file-based database files
  */
-set_magic_quotes_runtime(0);
+//set_magic_quotes_runtime(0);
 
 define('LOAD_SESSIONS', true);
 if (!isset($GALLERY_NO_SESSIONS)) {
@@ -218,8 +218,8 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 				include_once(dirname(__FILE__) . "/classes/postnuke/UserDB.php");
 				include_once(dirname(__FILE__) . "/classes/postnuke/User.php");
 
-				$gallery->database{"db"} = $GLOBALS['dbconn'];
-				$gallery->database{"prefix"} = $GLOBALS['pnconfig']['prefix'] . "_";
+				$gallery->database["db"] = $GLOBALS['dbconn'];
+				$gallery->database["prefix"] = $GLOBALS['pnconfig']['prefix'] . "_";
 			}
 			else {
 				/* 0.7.1 and beyond */
@@ -249,7 +249,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			include_once(dirname(__FILE__) . "/classes/nuke5/UserDB.php");
 			include_once(dirname(__FILE__) . "/classes/nuke5/User.php");
 
-			$gallery->database{"nuke"} = new MySQL_Database(
+			$gallery->database["nuke"] = new MySQL_Database(
 				$GLOBALS['dbhost'],
 				$GLOBALS['dbuname'],
 				$GLOBALS['dbpass'],
@@ -257,18 +257,18 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			);
 
 			if (isset($GLOBALS['user_prefix'])) {
-				$gallery->database{"user_prefix"} = $GLOBALS['user_prefix'] . '_';
+				$gallery->database["user_prefix"] = $GLOBALS['user_prefix'] . '_';
 			}
 			else {
-				$gallery->database{"user_prefix"} = 'nuke_';
+				$gallery->database["user_prefix"] = 'nuke_';
 			}
 
-			$gallery->database{"prefix"} = $GLOBALS['prefix'] . '_';
+			$gallery->database["prefix"] = $GLOBALS['prefix'] . '_';
 
 			/* PHP-Nuke changed its "users" table field names in v.6.5 */
 			/* Select the appropriate field names */
 			if (isset($Version_Num) && $Version_Num >= "6.5") {
-				$gallery->database{'fields'} = array (
+				$gallery->database['fields'] = array (
 					'name'  => 'name',
 					'uname' => 'username',
 					'email' => 'user_email',
@@ -276,7 +276,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 				);
 			}
 			else {
-				$gallery->database{'fields'} = array (
+				$gallery->database['fields'] = array (
 					'name'  => 'name',
 					'uname' => 'uname',
 					'email' => 'email',
@@ -298,7 +298,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			}
 			else if (is_user($GLOBALS['user'])) {
 				$user_info = getusrinfo($GLOBALS['user']);
-				$gallery->session->username = $user_info[$gallery->database{'fields'}{'uname'}];
+				$gallery->session->username = $user_info[$gallery->database['fields']['uname']];
 				$gallery->user = $gallery->userDB->getUserByUsername($gallery->session->username);
 			}
 
@@ -311,7 +311,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			include_once(dirname(__FILE__) . "/classes/nsnnuke/UserDB.php");
 			include_once(dirname(__FILE__) . "/classes/nsnnuke/User.php");
 
-			$gallery->database{"nsnnuke"} = new MySQL_Database(
+			$gallery->database["nsnnuke"] = new MySQL_Database(
 				$GLOBALS['dbhost'],
 				$GLOBALS['dbuname'],
 				$GLOBALS['dbpass'],
@@ -319,17 +319,17 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			);
 
 			if (isset($GLOBALS['user_prefix'])) {
-				$gallery->database{"user_prefix"} = $GLOBALS['user_prefix'] . '_';
+				$gallery->database["user_prefix"] = $GLOBALS['user_prefix'] . '_';
 			}
 			else {
-				$gallery->database{"user_prefix"} = 'nukea_';
+				$gallery->database["user_prefix"] = 'nukea_';
 			}
 
-			$gallery->database{"prefix"} = $GLOBALS['prefix'] . '_';
-			$gallery->database{"admin_prefix"} = $GLOBALS['prefix'] . 'b_';
+			$gallery->database["prefix"] = $GLOBALS['prefix'] . '_';
+			$gallery->database["admin_prefix"] = $GLOBALS['prefix'] . 'b_';
 
 			/* Select the appropriate field names */
-			$gallery->database{'fields'} = array (
+			$gallery->database['fields'] = array (
 				'name'  => 'realname',
 				'uname' => 'username',
 				'email' => 'user_email',
@@ -350,7 +350,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			}
 			else if (is_user($GLOBALS['user'])) {
 				$user_info = getusrinfo($GLOBALS['user']);
-				$gallery->session->username = $user_info[$gallery->database{'fields'}{'uname'}];
+				$gallery->session->username = $user_info[$gallery->database['fields']['uname']];
 				$gallery->user = $gallery->userDB->getUserByUsername($gallery->session->username);
 			}
 
@@ -377,10 +377,10 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 				$dbname = $GLOBALS['db']->dbname;
 			}
 
-			$gallery->database{"phpbb"} = new MySQL_Database($dbhost, $dbuser, $dbpasswd, $dbname);
+			$gallery->database["phpbb"] = new MySQL_Database($dbhost, $dbuser, $dbpasswd, $dbname);
 
-			//		$gallery->database{"phpbb"}->setTablePrefix($GLOBALS['table_prefix']);
-			$gallery->database{"prefix"} = $GLOBALS['table_prefix'];
+			//		$gallery->database["phpbb"]->setTablePrefix($GLOBALS['table_prefix']);
+			$gallery->database["prefix"] = $GLOBALS['table_prefix'];
 			/* Load our user database (and user object) */
 			$gallery->userDB = new phpbb_UserDB;
 			if (isset($GLOBALS['userdata']) && isset($GLOBALS['userdata']['username'])) {
@@ -439,14 +439,14 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 				exit;
 			}
 
-			$gallery->database{'mambo'} = new MySQL_Database(
+			$gallery->database['mambo'] = new MySQL_Database(
 					$mosConfig_host,
 					$mosConfig_user,
 					$mosConfig_password,
 					$mosConfig_db
 			);
-			$gallery->database{'user_prefix'} = $mosConfig_dbprefix;
-			$gallery->database{'fields'} = array (
+			$gallery->database['user_prefix'] = $mosConfig_dbprefix;
+			$gallery->database['fields'] = array (
 				'name'  => 'name',
 				'uname' => 'username',
 				'email' => 'email',
@@ -477,11 +477,11 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			 * to know the Item ID of the Gallery component's menu
 			 * item. +2 DB calls. <sigh>
 			*/
-			$db = $gallery->database{'mambo'};
-			$results = $db->query('SELECT id FROM ' . $gallery->database{'user_prefix'} . "components WHERE link='option=$GALLERY_MODULENAME'");
+			$db = $gallery->database['mambo'];
+			$results = $db->query('SELECT id FROM ' . $gallery->database['user_prefix'] . "components WHERE link='option=$GALLERY_MODULENAME'");
 			$row = $db->fetch_row($results);
 			$componentId = $row[0];
-			$results = $db->query('SELECT id FROM ' . $gallery->database{'user_prefix'} . "menu WHERE componentid='$componentId' AND type = 'components' AND published = 1");
+			$results = $db->query('SELECT id FROM ' . $gallery->database['user_prefix'] . "menu WHERE componentid='$componentId' AND type = 'components' AND published = 1");
 			$row = $db->fetch_row($results);
 			$MOS_GALLERY_PARAMS['itemid'] = $row[0]; // pick the first one
 
@@ -524,7 +524,7 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			include_once(dirname(__FILE__) . "/classes/nsnnuke/UserDB.php");
 			include_once(dirname(__FILE__) . "/classes/nsnnuke/User.php");
 
-			$gallery->database{"cpgnuke"} = new MySQL_Database(
+			$gallery->database["cpgnuke"] = new MySQL_Database(
 				$GLOBALS['dbhost'],
 				$GLOBALS['dbuname'],
 				$GLOBALS['dbpass'],
@@ -532,16 +532,16 @@ if (isset($GALLERY_EMBEDDED_INSIDE)) {
 			);
 
 			if (isset($GLOBALS['user_prefix'])) {
-				$gallery->database{"user_prefix"} = $GLOBALS['prefix'] . '_';
+				$gallery->database["user_prefix"] = $GLOBALS['prefix'] . '_';
 			}
 			else {
-				$gallery->database{"user_prefix"} = 'cms';
+				$gallery->database["user_prefix"] = 'cms';
 			}
-			$gallery->database{"prefix"} = $GLOBALS['prefix'] . '_';
-			$gallery->database{"admin_prefix"} = $GLOBALS['prefix'] . 'b_';
+			$gallery->database["prefix"] = $GLOBALS['prefix'] . '_';
+			$gallery->database["admin_prefix"] = $GLOBALS['prefix'] . 'b_';
 
 			/* Select the appropriate field names */
-			$gallery->database{'fields'} = array (
+			$gallery->database['fields'] = array (
 				'name'  => 'name',
 				'uname' => 'username',
 				'email' => 'user_email',
@@ -570,7 +570,7 @@ else {
 	include_once(dirname(__FILE__) . "/classes/gallery/User.php");
 
 	/* Load our user database (and user object) */
-	$gallery->userDB = new Gallery_UserDB;
+	$gallery->userDB = new Gallery_UserDB();
 
 	/* Load their user object with their username as the key */
 	if (isset($gallery->session->username) && !empty($gallery->session->username)) {
@@ -599,7 +599,7 @@ if ($gallery->userDB->isInitialized() && $gallery->userDB->versionOutOfDate()) {
 
 /* Load the correct album object */
 if (!empty($gallery->session->albumName)) {
-	$gallery->album = new Album;
+	$gallery->album = new Album();
 	$ret = $gallery->album->load($gallery->session->albumName);
 	if (!$ret) {
 		$gallery->session->albumName = '';

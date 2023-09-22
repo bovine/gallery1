@@ -43,7 +43,7 @@ class AlbumItem {
 	var $emailMe;
 	var $imageAreas;
 
-	function AlbumItem() {
+	function __construct() {
 		global $gallery;
 		$this->version = $gallery->album_version;
 		$this->extraFields = array();
@@ -157,6 +157,9 @@ class AlbumItem {
 	}
 
 	function numComments() {
+		if (!isset($this->comments)) {
+			return 0;
+		}
 		return sizeof($this->comments);
 	}
 
@@ -883,7 +886,7 @@ class AlbumItem {
 		}
 	}
 
-	function getPhotoTag($dir, $full = false, $attrs) {
+	function getPhotoTag($dir, $full = false, $attrs = null) {
 		if (!isset($attrs['alt'])) {
 			$attrs['alt'] = $this->getAlttext();
 		}
